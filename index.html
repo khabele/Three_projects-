@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="3 Projects">
+<meta name="theme-color" content="#3C3489">
+<title>Three Projects Tracker</title>
+<link rel="icon" href="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='7' fill='%233C3489'/><text x='16' y='22' font-family='sans-serif' font-size='14' font-weight='700' fill='white' text-anchor='middle'>3P</text></svg>">
+<style>
+:root{
+--bg:#FAFAF7;--surface:#FFFFFF;--surface2:#F1EFE8;
+--text:#1A1A1A;--text2:#5F5E5A;--text3:#888780;
+--border:rgba(0,0,0,0.08);--border2:rgba(0,0,0,0.15);
+--phd:#7F77DD;--phdbg:#EEEDFE;--phdtext:#3C3489;
+--biz:#1D9E75;--bizbg:#E1F5EE;--biztext:#085041;
+--job:#BA7517;--jobbg:#FAEEDA;--jobtext:#854F0B;
+--restbg:#F1EFE8;--plan:#A32D2D;--planbg:#FCEBEB;
+}
+@media(prefers-color-scheme:dark){:root{
+--bg:#1A1918;--surface:#25231F;--surface2:#2C2A26;
+--text:#F5F4F0;--text2:#B4B2A9;--text3:#888780;
+--border:rgba(255,255,255,0.08);--border2:rgba(255,255,255,0.15);
+--phdbg:#26215C;--phdtext:#CECBF6;
+--bizbg:#04342C;--biztext:#9FE1CB;
+--jobbg:#412402;--jobtext:#FAC775;
+--restbg:#2C2A26;--planbg:#501313;
+}}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;background:var(--bg);color:var(--text);font-size:15px;line-height:1.5;overscroll-behavior:none;-webkit-font-smoothing:antialiased}
+.app{max-width:480px;margin:0 auto;min-height:100vh;padding-bottom:80px}
+.header{position:sticky;top:0;background:var(--bg);z-index:100;padding:14px 16px 8px;border-bottom:0.5px solid var(--border)}
+.htitle{font-size:22px;font-weight:600;letter-spacing:-0.02em}
+.hsub{font-size:12px;color:var(--text2);margin-top:2px}
+.metrics{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;padding:12px 16px 0}
+.metric{background:var(--surface);border:0.5px solid var(--border);border-radius:12px;padding:10px 12px}
+.ml{font-size:11px;color:var(--text2);margin-bottom:4px}
+.mv{font-size:18px;font-weight:600}
+.tabs{display:flex;gap:4px;padding:12px 16px 4px;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+.tabs::-webkit-scrollbar{display:none}
+.tab{padding:7px 14px;border-radius:18px;background:var(--surface);border:0.5px solid var(--border);color:var(--text2);font-size:13px;font-weight:500;white-space:nowrap;cursor:pointer;transition:all 0.15s}
+.tab.active{background:var(--phdtext);border-color:var(--phdtext);color:white}
+@media(prefers-color-scheme:dark){.tab.active{color:#1A1918}}
+.panel{display:none;padding:8px 16px 0}
+.panel.active{display:block}
+.section{font-size:11px;font-weight:600;color:var(--text2);letter-spacing:0.06em;text-transform:uppercase;margin:16px 0 8px;padding:0 4px}
+.card{background:var(--surface);border:0.5px solid var(--border);border-radius:14px;padding:14px;margin-bottom:10px}
+.ctitle{font-size:15px;font-weight:600;margin-bottom:4px}
+.cbody{font-size:13px;color:var(--text2);line-height:1.6}
+.badge{display:inline-block;font-size:10px;font-weight:600;padding:3px 9px;border-radius:999px;margin-bottom:8px}
+.bphd{background:var(--phdbg);color:var(--phdtext)}
+.bbiz{background:var(--bizbg);color:var(--biztext)}
+.bjob{background:var(--jobbg);color:var(--jobtext)}
+.tasks{list-style:none}
+.tasks li{display:flex;align-items:flex-start;gap:12px;padding:11px 0;border-bottom:0.5px solid var(--border);cursor:pointer}
+.tasks li:last-child{border-bottom:none}
+.cb{width:22px;height:22px;border-radius:6px;border:1.5px solid var(--border2);flex-shrink:0;display:flex;align-items:center;justify-content:center;margin-top:1px;transition:all 0.15s}
+.cb.on{border-color:var(--biz);background:var(--biz)}
+.cb.on::after{content:'';width:10px;height:6px;border-left:2px solid white;border-bottom:2px solid white;transform:rotate(-45deg) translate(1px,-1px)}
+.tl{font-size:13.5px;line-height:1.5;flex:1}
+.td{color:var(--text3);text-decoration:line-through}
+.barw{background:var(--surface2);border-radius:99px;height:6px;margin:12px 0 6px;overflow:hidden}
+.bar{height:6px;border-radius:99px;transition:width 0.4s cubic-bezier(0.4,0,0.2,1)}
+.bl{font-size:12px;color:var(--text2);font-weight:500}
+.day{background:var(--surface);border:0.5px solid var(--border);border-radius:12px;padding:12px 14px;margin-bottom:8px}
+.dh{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
+.dn{font-size:14px;font-weight:600}
+.dhrs{font-size:12px;color:var(--text2);background:var(--surface2);padding:2px 9px;border-radius:99px}
+.tb{display:flex;align-items:center;gap:10px;padding:6px 0;font-size:12.5px}
+.ts{color:var(--text2);font-variant-numeric:tabular-nums;min-width:90px;font-size:11.5px}
+.bt{flex:1;padding:4px 10px;border-radius:6px;font-size:11.5px;font-weight:500}
+.bt-phd{background:var(--phdbg);color:var(--phdtext)}
+.bt-biz{background:var(--bizbg);color:var(--biztext)}
+.bt-job{background:var(--jobbg);color:var(--jobtext)}
+.bt-rest{background:var(--restbg);color:var(--text2)}
+.bt-plan{background:var(--planbg);color:var(--plan)}
+.streak{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin-bottom:12px}
+.sd{background:var(--surface);border:0.5px solid var(--border);border-radius:10px;padding:10px 6px;text-align:center;cursor:pointer;transition:all 0.2s}
+.sd.on{background:var(--bizbg);border-color:var(--biz)}
+.sd.on .sn,.sd.on .ss{color:var(--biztext)}
+.sn{font-size:11px;font-weight:600;color:var(--text2);margin-bottom:4px}
+.ss{font-size:16px;color:var(--text3)}
+.sd.on .ss::before{content:'\2713';color:var(--biz);font-weight:700}
+.sd:not(.on) .ss::before{content:'\25CB'}
+.pr{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:0.5px solid var(--border)}
+.pr:last-child{border-bottom:none}
+.pl{flex:1;font-size:13px;font-weight:500}
+.pmb{width:80px;background:var(--surface2);border-radius:99px;height:5px;overflow:hidden}
+.pmf{height:5px;border-radius:99px;transition:width 0.4s}
+.pp{font-size:13px;font-weight:600;min-width:36px;text-align:right}
+.note{font-size:12px;color:var(--text2);line-height:1.7;padding:12px 14px;background:var(--surface);border-radius:12px;border-left:3px solid var(--phd);margin:10px 0}
+.rules{list-style:none;counter-reset:r}
+.rules li{counter-increment:r;padding:10px 0 10px 32px;position:relative;font-size:13px;border-bottom:0.5px solid var(--border);line-height:1.5}
+.rules li:last-child{border-bottom:none}
+.rules li::before{content:counter(r);position:absolute;left:0;top:10px;width:22px;height:22px;background:var(--phdbg);color:var(--phdtext);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700}
+.tip{background:var(--surface);border:0.5px solid var(--border);border-radius:12px;padding:12px 14px;margin:8px 16px 0;font-size:12.5px;color:var(--text2);line-height:1.5}
+.tip strong{color:var(--text);font-weight:600}
+.btn{width:100%;background:transparent;border:0.5px solid var(--border2);color:var(--text2);padding:11px;border-radius:10px;font-size:13px;margin-top:12px;cursor:pointer;font-weight:500}
+.btn:active{background:var(--surface2)}
+@supports(padding:max(0px)){.app{padding-bottom:max(80px,env(safe-area-inset-bottom))}.header{padding-top:max(14px,env(safe-area-inset-top))}}
+</style>
+</head>
+<body>
+<div class="app">
+<div class="header"><div class="htitle">Three projects</div><div class="hsub" id="hd"></div></div>
+<div class="metrics">
+<div class="metric"><div class="ml">Tasks done</div><div class="mv" id="mdone">0 / 24</div></div>
+<div class="metric"><div class="ml">Days on plan</div><div class="mv" id="mstr">0 / 5</div></div>
+</div>
+<div class="tip" id="tip"><strong>Add to home screen</strong> &mdash; Chrome menu (3 dots) then "Add to Home screen". Progress saves automatically.</div>
+<div class="tabs">
+<div class="tab active" data-t="sched">Schedule</div>
+<div class="tab" data-t="phd">PhD</div>
+<div class="tab" data-t="biz">Business</div>
+<div class="tab" data-t="job">Job hunt</div>
+<div class="tab" data-t="trk">Tracker</div>
+</div>
+
+<div class="panel active" id="p-sched">
+<div class="section">Time allocation &mdash; 40 hrs/week</div>
+<div class="card">
+<div class="pr"><span class="badge bphd">PhD</span><div class="pl" style="font-size:12.5px">25 hrs &middot; 62%</div><div class="pmb"><div class="pmf" style="width:62%;background:var(--phd)"></div></div></div>
+<div class="pr"><span class="badge bbiz">Business</span><div class="pl" style="font-size:12.5px">8 hrs &middot; 20%</div><div class="pmb"><div class="pmf" style="width:20%;background:var(--biz)"></div></div></div>
+<div class="pr"><span class="badge bjob">Job hunt</span><div class="pl" style="font-size:12.5px">7 hrs &middot; 18%</div><div class="pmb"><div class="pmf" style="width:18%;background:var(--job)"></div></div></div>
+</div>
+<div class="section">Daily schedule</div>
+<div class="day"><div class="dh"><div class="dn">Monday</div><div class="dhrs">9.5 hrs</div></div>
+<div class="tb"><div class="ts">07:00</div><div class="bt bt-plan">Weekly plan</div></div>
+<div class="tb"><div class="ts">08:00&ndash;13:00</div><div class="bt bt-phd">PhD deep work</div></div>
+<div class="tb"><div class="ts">13:00&ndash;14:00</div><div class="bt bt-rest">Lunch</div></div>
+<div class="tb"><div class="ts">14:00&ndash;16:00</div><div class="bt bt-phd">PhD writing</div></div>
+<div class="tb"><div class="ts">16:00&ndash;17:30</div><div class="bt bt-biz">Biz admin</div></div>
+</div>
+<div class="day"><div class="dh"><div class="dn">Tuesday</div><div class="dhrs">9.5 hrs</div></div>
+<div class="tb"><div class="ts">08:00&ndash;13:00</div><div class="bt bt-phd">PhD deep work</div></div>
+<div class="tb"><div class="ts">13:00&ndash;14:00</div><div class="bt bt-rest">Lunch</div></div>
+<div class="tb"><div class="ts">14:00&ndash;16:00</div><div class="bt bt-phd">PhD analysis</div></div>
+<div class="tb"><div class="ts">16:00&ndash;17:30</div><div class="bt bt-biz">Proposals</div></div>
+</div>
+<div class="day"><div class="dh"><div class="dn">Wednesday</div><div class="dhrs">9.5 hrs</div></div>
+<div class="tb"><div class="ts">08:00&ndash;13:00</div><div class="bt bt-phd">PhD deep work</div></div>
+<div class="tb"><div class="ts">13:00&ndash;14:00</div><div class="bt bt-rest">Lunch</div></div>
+<div class="tb"><div class="ts">14:00&ndash;16:00</div><div class="bt bt-phd">PhD revision</div></div>
+<div class="tb"><div class="ts">16:00&ndash;17:30</div><div class="bt bt-biz">Marketing</div></div>
+</div>
+<div class="day"><div class="dh"><div class="dn">Thursday</div><div class="dhrs">9.5 hrs</div></div>
+<div class="tb"><div class="ts">08:00&ndash;13:00</div><div class="bt bt-biz">Business engine day</div></div>
+<div class="tb"><div class="ts">13:00&ndash;14:00</div><div class="bt bt-rest">Lunch</div></div>
+<div class="tb"><div class="ts">14:00&ndash;16:00</div><div class="bt bt-biz">Client work</div></div>
+<div class="tb"><div class="ts">16:00&ndash;17:30</div><div class="bt bt-phd">PhD review</div></div>
+</div>
+<div class="day"><div class="dh"><div class="dn">Friday</div><div class="dhrs">8 hrs</div></div>
+<div class="tb"><div class="ts">08:00&ndash;13:00</div><div class="bt bt-job">Job hunt day</div></div>
+<div class="tb"><div class="ts">13:00&ndash;14:00</div><div class="bt bt-rest">Lunch</div></div>
+<div class="tb"><div class="ts">14:00&ndash;16:00</div><div class="bt bt-job">Network &middot; apply</div></div>
+<div class="tb"><div class="ts">16:00&ndash;17:30</div><div class="bt bt-plan">Weekly review</div></div>
+</div>
+<div class="note">Hard stop at 17:30. Rest is recovery &mdash; overworking all three leads to burnout, not progress.</div>
+</div>
+
+<div class="panel" id="p-phd">
+<div class="section">PhD &mdash; 8-week sprint</div>
+<div class="card"><span class="badge bphd">Priority 1 &middot; 25 hrs/week</span>
+<div class="ctitle">Complete &amp; submit thesis</div>
+<div class="cbody">Bayesian hierarchical PD model for low-default portfolios. Data complete. Focus: writing, results, submission.</div></div>
+<div class="section">Milestones</div>
+<ul class="tasks" id="phd-t"></ul>
+<div class="barw"><div class="bar" id="phd-b" style="width:0%;background:var(--phd)"></div></div>
+<div class="bl" id="phd-l">0 / 10 milestones</div>
+</div>
+
+<div class="panel" id="p-biz">
+<div class="section">Business &mdash; R100k/month target</div>
+<div class="card"><span class="badge bbiz">Priority 2 &middot; 8 hrs/week</span>
+<div class="ctitle">Statistics consulting</div>
+<div class="cbody">Your MSc + PhD in Bayesian modelling is a premium asset. Thursday is your business engine day.</div></div>
+<div class="section">Milestones</div>
+<ul class="tasks" id="biz-t"></ul>
+<div class="barw"><div class="bar" id="biz-b" style="width:0%;background:var(--biz)"></div></div>
+<div class="bl" id="biz-l">0 / 8 milestones</div>
+<div class="section">Thursday plan</div>
+<div class="card"><div class="cbody" style="line-height:1.9">
+<strong style="color:var(--text);font-weight:600">10:00&ndash;11:00</strong> &middot; 5 LinkedIn messages or emails<br>
+<strong style="color:var(--text);font-weight:600">11:00&ndash;13:00</strong> &middot; Client delivery or proposals<br>
+<strong style="color:var(--text);font-weight:600">14:00&ndash;16:00</strong> &middot; Reports, training material<br>
+<strong style="color:var(--text);font-weight:600">16:00&ndash;17:30</strong> &middot; PhD review + admin
+</div></div>
+</div>
+
+<div class="panel" id="p-job">
+<div class="section">Remote job hunt</div>
+<div class="card"><span class="badge bjob">Priority 3 &middot; 7 hrs/week</span>
+<div class="ctitle">Land high-paying remote role</div>
+<div class="cbody">Target: biostatistician, quant analyst, data scientist, Bayesian modeller. Friday is your dedicated job-hunt day.</div></div>
+<div class="section">Milestones</div>
+<ul class="tasks" id="job-t"></ul>
+<div class="barw"><div class="bar" id="job-b" style="width:0%;background:var(--job)"></div></div>
+<div class="bl" id="job-l">0 / 6 milestones</div>
+<div class="section">Friday plan</div>
+<div class="card"><div class="cbody" style="line-height:1.9">
+<strong style="color:var(--text);font-weight:600">08:00&ndash;10:00</strong> &middot; 2-3 targeted applications<br>
+<strong style="color:var(--text);font-weight:600">10:00&ndash;13:00</strong> &middot; GitHub portfolio, case studies<br>
+<strong style="color:var(--text);font-weight:600">14:00&ndash;16:00</strong> &middot; LinkedIn networking<br>
+<strong style="color:var(--text);font-weight:600">16:00&ndash;17:00</strong> &middot; Weekly review
+</div></div>
+</div>
+
+<div class="panel" id="p-trk">
+<div class="section">This week &mdash; tap days you stayed on plan</div>
+<div class="streak" id="strk"></div>
+<div class="section">Overall progress</div>
+<div class="card" id="op"></div>
+<div class="section">Weekly rules</div>
+<div class="card"><ul class="rules">
+<li>PhD deep work (08:00&ndash;13:00) is sacred. No exceptions.</li>
+<li>Thursday = business only.</li>
+<li>Friday = job hunt only.</li>
+<li>Hard stop at 17:30 every day.</li>
+<li>Sunday evening: 30-min plan for the week.</li>
+<li>Never let one project bleed into another's block.</li>
+<li>One win per project before stopping Friday.</li>
+</ul></div>
+<button class="btn" id="rw">Reset week (keeps milestones)</button>
+<button class="btn" id="ra" style="margin-top:8px;color:var(--plan)">Reset everything</button>
+</div>
+</div>
+
+<script>
+var SK='three_projects_v1';
+var pT=["Week 1-2: Finalise model results","Week 1-2: Fix visualisation script","Week 3: Write results chapter","Week 3: Stress testing section","Week 4: Write discussion","Week 4: Submit draft to supervisor","Week 5-6: Address feedback","Week 6: Intro & literature review","Week 7: Full proofread","Week 8: Final formatting + submit"];
+var bT=["Define niche: Bayesian / credit risk / DS","Package 3 service tiers","Build LinkedIn profile","Create 2 portfolio case studies","Land first paid client","Reach R25,000/month","Reach R50,000/month","Reach R100,000/month"];
+var jT=["Identify 5 target companies","Build GitHub portfolio: 3 projects","Tailor CV for remote roles","Apply to 20 targeted roles","Complete 3 take-home assessments","Receive and negotiate offer"];
+var dN=['Mon','Tue','Wed','Thu','Fri'];
+var s=ld();
+function ld(){try{var x=localStorage.getItem(SK);if(x)return JSON.parse(x)}catch(e){}return{phd:new Array(pT.length).fill(false),biz:new Array(bT.length).fill(false),job:new Array(jT.length).fill(false),days:new Array(5).fill(false),ws:ws()}}
+function ws(){var n=new Date(),d=n.getDay(),df=d===0?-6:1-d,m=new Date(n);m.setDate(n.getDate()+df);m.setHours(0,0,0,0);return m.getTime()}
+function ck(){var c=ws();if(s.ws!==c){s.days=new Array(5).fill(false);s.ws=c;sv()}}
+function sv(){try{localStorage.setItem(SK,JSON.stringify(s))}catch(e){}}
+function sd(){var d=new Date();document.getElementById('hd').textContent=d.toLocaleDateString('en-US',{weekday:'long',month:'short',day:'numeric'})}
+function rT(k,T,id){var u=document.getElementById(id);u.innerHTML='';T.forEach(function(t,i){var l=document.createElement('li'),c=s[k][i];l.innerHTML='<div class="cb '+(c?'on':'')+'"></div><div class="tl '+(c?'td':'')+'">'+t+'</div>';l.addEventListener('click',function(){tg(k,i)});u.appendChild(l)})}
+function tg(k,i){s[k][i]=!s[k][i];sv();var T=k==='phd'?pT:k==='biz'?bT:jT;rT(k,T,k+'-t');up()}
+function up(){var c=[{k:'phd',t:pT.length,c:'var(--phd)'},{k:'biz',t:bT.length,c:'var(--biz)'},{k:'job',t:jT.length,c:'var(--job)'}],td=0,ta=0;c.forEach(function(x){var d=s[x.k].filter(function(y){return y}).length,p=Math.round(d/x.t*100);document.getElementById(x.k+'-b').style.width=p+'%';document.getElementById(x.k+'-l').textContent=d+' / '+x.t+' milestones \u00b7 '+p+'%';td+=d;ta+=x.t});document.getElementById('mdone').textContent=td+' / '+ta;document.getElementById('op').innerHTML=c.map(function(x){var d=s[x.k].filter(function(y){return y}).length,p=Math.round(d/x.t*100),lb=x.k==='phd'?'PhD thesis':x.k==='biz'?'Business \u00b7 R100k':'Remote job hunt';return '<div class="pr"><div class="pl">'+lb+'</div><div class="pmb"><div class="pmf" style="width:'+p+'%;background:'+x.c+'"></div></div><div class="pp" style="color:'+x.c+'">'+p+'%</div></div>'}).join('')}
+function rs(){var g=document.getElementById('strk');g.innerHTML='';dN.forEach(function(d,i){var e=document.createElement('div');e.className='sd'+(s.days[i]?' on':'');e.innerHTML='<div class="sn">'+d+'</div><div class="ss"></div>';e.addEventListener('click',function(){s.days[i]=!s.days[i];sv();rs();us()});g.appendChild(e)})}
+function us(){var d=s.days.filter(function(x){return x}).length;document.getElementById('mstr').textContent=d+' / 5'}
+document.querySelectorAll('.tab').forEach(function(t){t.addEventListener('click',function(){document.querySelectorAll('.tab').forEach(function(x){x.classList.remove('active')});document.querySelectorAll('.panel').forEach(function(x){x.classList.remove('active')});t.classList.add('active');document.getElementById('p-'+t.dataset.t).classList.add('active');window.scrollTo(0,0)})});
+document.getElementById('rw').addEventListener('click',function(){if(confirm("Reset this week's daily tracker?")){s.days=new Array(5).fill(false);s.ws=ws();sv();rs();us()}});
+document.getElementById('ra').addEventListener('click',function(){if(confirm('Reset ALL progress? Cannot be undone.')){localStorage.removeItem(SK);s=ld();init()}});
+if(window.matchMedia('(display-mode: standalone)').matches||window.navigator.standalone===true){document.getElementById('tip').style.display='none'}
+function init(){sd();ck();rT('phd',pT,'phd-t');rT('biz',bT,'biz-t');rT('job',jT,'job-t');rs();up();us()}
+init();
+</script>
+</body>
+</html>
